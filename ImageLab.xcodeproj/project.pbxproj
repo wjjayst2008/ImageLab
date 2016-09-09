@@ -77,6 +77,7 @@
 		B650B30E1D8340F0000114A1 = {
 			isa = PBXGroup;
 			children = (
+				B650B34A1D83435A000114A1 /* ImageDSPUtils */,
 				B650B3191D8340F0000114A1 /* ImageLab */,
 				B650B32E1D8340F0000114A1 /* ImageLabTests */,
 				B650B3391D8340F0000114A1 /* ImageLabUITests */,
@@ -123,6 +124,14 @@
 				B650B33C1D8340F0000114A1 /* Info.plist */,
 			);
 			path = ImageLabUITests;
+			sourceTree = "<group>";
+		};
+		B650B34A1D83435A000114A1 /* ImageDSPUtils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = ImageDSPUtils;
+			path = ImageLab;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -482,6 +491,7 @@
 				B650B3411D8340F0000114A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B650B3421D8340F0000114A1 /* Build configuration list for PBXNativeTarget "ImageLabTests" */ = {
 			isa = XCConfigurationList;
@@ -490,6 +500,7 @@
 				B650B3441D8340F0000114A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B650B3451D8340F0000114A1 /* Build configuration list for PBXNativeTarget "ImageLabUITests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +509,7 @@
 				B650B3471D8340F0000114A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
