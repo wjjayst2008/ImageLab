@@ -18,15 +18,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Es9-sy-OlH">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="507"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HQl-ft-16V">
+                                <rect key="frame" x="261" y="550" width="78" height="30"/>
+                                <state key="normal" title="Take Image"/>
+                                <connections>
+                                    <action selector="loadImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oLg-5B-fbg"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Es9-sy-OlH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="6Qx-a4-JXs"/>
+                            <constraint firstAttribute="bottom" secondItem="HQl-ft-16V" secondAttribute="bottom" constant="20" symbolic="YES" id="Eoj-DB-eqa"/>
                             <constraint firstItem="Es9-sy-OlH" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Gf2-L1-r1K"/>
                             <constraint firstAttribute="trailing" secondItem="Es9-sy-OlH" secondAttribute="trailing" id="abb-w0-1i8"/>
-                            <constraint firstItem="Es9-sy-OlH" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="ikL-tS-DbL"/>
+                            <constraint firstItem="HQl-ft-16V" firstAttribute="centerX" secondItem="Es9-sy-OlH" secondAttribute="centerX" id="bzm-pZ-579"/>
+                            <constraint firstItem="Es9-sy-OlH" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" constant="-93" id="ikL-tS-DbL"/>
                         </constraints>
                     </view>
                     <connections>
