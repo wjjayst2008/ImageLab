@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  ImageLab
 //
-//  Created by Eric Larson on 9/9/16.
+//  Created by Eric Larson
 //  Copyright © 2016 Eric Larson. All rights reserved.
 //
 
