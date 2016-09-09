@@ -14,6 +14,7 @@
 		B650B3251D8340F0000114A1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B650B3231D8340F0000114A1 /* LaunchScreen.storyboard */; };
 		B650B3301D8340F0000114A1 /* ImageLabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B32F1D8340F0000114A1 /* ImageLabTests.swift */; };
 		B650B33B1D8340F0000114A1 /* ImageLabUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B33A1D8340F0000114A1 /* ImageLabUITests.swift */; };
+		B650B34E1D834D46000114A1 /* smu-campus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B650B34D1D834D46000114A1 /* smu-campus.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		B650B3361D8340F0000114A1 /* ImageLabUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageLabUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B650B33A1D8340F0000114A1 /* ImageLabUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLabUITests.swift; sourceTree = "<group>"; };
 		B650B33C1D8340F0000114A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B650B34D1D834D46000114A1 /* smu-campus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "smu-campus.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				B650B3211D8340F0000114A1 /* Assets.xcassets */,
 				B650B3231D8340F0000114A1 /* LaunchScreen.storyboard */,
 				B650B3261D8340F0000114A1 /* Info.plist */,
+				B650B34D1D834D46000114A1 /* smu-campus.jpg */,
 			);
 			path = ImageLab;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B650B34E1D834D46000114A1 /* smu-campus.jpg in Resources */,
 				B650B3251D8340F0000114A1 /* LaunchScreen.storyboard in Resources */,
 				B650B3221D8340F0000114A1 /* Assets.xcassets in Resources */,
 				B650B3201D8340F0000114A1 /* Main.storyboard in Resources */,
