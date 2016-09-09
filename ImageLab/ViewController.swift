@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
 
     @IBOutlet weak var imageView: UIImageView!
-    var filter : CIFilter! = nil
+    var filters : [CIFilter]! = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,14 +21,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         let beginImage = CIImage(contentsOfURL: fileURL)
         
-        filter = CIFilter(name: "CIBloom")!
-        filter.setValue(beginImage, forKey: kCIInputImageKey)
-        filter.setValue(0.5, forKey: kCIInputIntensityKey)
-        filter.setValue(20, forKey: "inputRadius")
+        self.setupFilters()
         
-        let newImage = UIImage(CIImage: filter.outputImage!)
+        let newImage = UIImage(CIImage: applyFilters(beginImage!))
         self.imageView.image = newImage
     
+    }
+    
+    func setupFilters(){
+        filters = []
+        let filterBloom = CIFilter(name: "CIBloom")!
+        //filterBloom.setValue(beginImage, forKey: kCIInputImageKey)
+        filterBloom.setValue(0.5, forKey: kCIInputIntensityKey)
+        filterBloom.setValue(20, forKey: "inputRadius")
+        filters.append(filterBloom)
+        
+        let filterHue = CIFilter(name:"CIHueAdjust")!
+        filterHue.setValue(10.0, forKey: "inputAngle")
+        filters.append(filterHue)
+    }
+    
+    func applyFilters(inputImage:CIImage)->CIImage{
+        var retImage = inputImage
+        for filt in filters{
+            filt.setValue(retImage, forKey: kCIInputImageKey)
+            retImage = filt.outputImage!
+        }
+        return retImage
     }
     
     
@@ -50,8 +69,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         let image = info["UIImagePickerControllerOriginalImage"] as! UIImage
         let beginImage = CIImage(image: image)
-        filter.setValue(beginImage, forKey: kCIInputImageKey)
-        let newImage = UIImage(CIImage: filter.outputImage!, scale: CGFloat(1.0), orientation: image.imageOrientation)
+        let newImage = UIImage(CIImage: applyFilters(beginImage!), scale: CGFloat(1.0), orientation: image.imageOrientation)
         self.imageView.image = newImage
         
     }
