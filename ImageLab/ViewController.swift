@@ -10,16 +10,28 @@ import UIKit
 
 class ViewController: UIViewController   {
 
-    
+    //MARK: Class Properties
     var filters : [CIFilter]! = nil
+    var videoManager:VideoAnalgesic! = nil
     
+    //MARK: ViewController Hierarchy
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = nil
         self.setupFilters()
         
+        self.videoManager = VideoAnalgesic.sharedInstance
+        
+        self.videoManager.setProcessingBlock(self.processImage)
+        
+        if !videoManager.isRunning{
+            videoManager.start()
+        }
     
     }
     
+    //MARK: Setup filtering
     func setupFilters(){
         filters = []
         let filterBloom = CIFilter(name: "CIBloom")!
@@ -41,6 +53,10 @@ class ViewController: UIViewController   {
         return retImage
     }
     
+    //MARK: Process image output
+    func processImage(inputImage:CIImage) -> CIImage{
+        return applyFilters(inputImage)
+    }
 
 }
 
