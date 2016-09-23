@@ -42,6 +42,7 @@ class ViewController: UIViewController   {
         let filterHue = CIFilter(name:"CIHueAdjust")!
         filterHue.setValue(10.0, forKey: "inputAngle")
         filters.append(filterHue)
+        
     }
     
     func applyFilters(inputImage:CIImage)->CIImage{
