@@ -55,6 +55,7 @@ class ViewController: UIViewController   {
         
     }
     
+    //MARK: Apply filters and apply feature detectors
     func applyFiltersToFaces(inputImage:CIImage,features:[CIFaceFeature])->CIImage{
         var retImage = inputImage
         var filterCenter = CGPoint()
@@ -63,14 +64,24 @@ class ViewController: UIViewController   {
             //set where to apply filter
             filterCenter.x = f.bounds.midX
             filterCenter.y = f.bounds.midY
+            
             //do for each filter (assumes all filters have property, "inputCenter")
             for filt in filters{
                 filt.setValue(retImage, forKey: kCIInputImageKey)
                 filt.setValue(CIVector(CGPoint: filterCenter), forKey: "inputCenter")
+                // could also manipualte the radius of the filter based on face size!
                 retImage = filt.outputImage!
             }
         }
         return retImage
+    }
+    
+    func getFaces(img:CIImage) -> [CIFaceFeature]{
+        // this ungodly mess makes sure the image is the correct orientation
+        let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
+        // get Face Features
+        return self.detector.featuresInImage(img, options: optsFace) as! [CIFaceFeature]
+        
     }
     
     //MARK: Process image output
@@ -86,13 +97,7 @@ class ViewController: UIViewController   {
         return applyFiltersToFaces(inputImage, features: f)
     }
     
-    func getFaces(img:CIImage) -> [CIFaceFeature]{
-        // this ungodly mess makes sure the image is the correct orientation
-        let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
-        // get Face Features
-        return self.detector.featuresInImage(img, options: optsFace) as! [CIFaceFeature]
-        
-    }
+    
 
    
 }
