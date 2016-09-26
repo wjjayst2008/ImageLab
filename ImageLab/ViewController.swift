@@ -16,6 +16,10 @@ class ViewController: UIViewController   {
     var videoManager:VideoAnalgesic! = nil
     let pinchFilterIndex = 2
     var detector:CIDetector! = nil
+    let bridge = OpenCVBridge()
+    
+    //MARK: Outlets in view
+    @IBOutlet weak var flashSlider: UISlider!
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -93,11 +97,46 @@ class ViewController: UIViewController   {
         // if no faces, just return original image
         if f.count == 0 { return inputImage }
         
-        //otherwise apply the filters to the faces
-        return applyFiltersToFaces(inputImage, features: f)
+        var retImage = inputImage
+        
+        // if you just want to process on separate queue use this code
+        // this is a non blocking call, but any changes to the image in OpenCV cannot be displayed
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+        //    OpenCVBridge.OpenCVTransferWithBounds(f[0].bounds, usingImage: retImage, andContext: self.videoManager.getCIContext())
+        //}
+        
+        // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCv
+        // this is a blocking call
+        self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+        self.bridge.processImage()
+        retImage = self.bridge.getImage()
+        //retImage = OpenCVBridge.OpenCVTransferBoundsAndReturnNewImage(inputImage.extent, usingImage: retImage, andContext: self.videoManager.getCIContext())
+        
+        return retImage
     }
     
+    //MARK: Convenience Methods
+    @IBAction func flash(sender: AnyObject) {
+        if(self.videoManager.toggleFlash()){
+            self.flashSlider.value = 1.0
+        }
+        else{
+            self.flashSlider.value = 0.0
+        }
+    }
     
+    @IBAction func switchCamera(sender: AnyObject) {
+        self.videoManager.toggleCameraPosition()
+    }
+    
+    @IBAction func setFlashLevel(sender: UISlider) {
+        if(sender.value>0.0){
+            self.videoManager.turnOnFlashwithLevel(sender.value)
+        }
+        else if(sender.value==0.0){
+            self.videoManager.turnOffFlash()
+        }
+    }
 
    
 }
