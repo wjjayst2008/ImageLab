@@ -48,6 +48,41 @@ class ViewController: UIViewController   {
     
     }
     
+    //MARK: Process image output
+    func processImage(inputImage:CIImage) -> CIImage{
+        
+        // detect faces
+        let f = getFaces(inputImage)
+        
+        // if no faces, just return original image
+        if f.count == 0 { return inputImage }
+        
+        var retImage = inputImage
+        
+        // if you just want to process on separate queue use this code
+        // this is a NON BLOCKING CALL, but any changes to the image in OpenCV cannot be displayed real time
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+        //    self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+        //    self.bridge.processImage()
+        //}
+        
+        // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCv
+        // this is a BLOCKING CALL
+        //self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+        //self.bridge.processImage()
+        //retImage = self.bridge.getImage()
+        
+        //HINT: you can also send in the bounds of the face to ONLY process the face in OpenCV
+        // or any bounds to only process a certain bounding region in OpenCV
+        self.bridge.setImage(retImage,
+                             withBounds: f[0].bounds, // the first face
+                             andContext: self.videoManager.getCIContext())
+        self.bridge.processImage()
+        retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
+        
+        return retImage
+    }
+    
     //MARK: Setup filtering
     func setupFilters(){
         filters = []
@@ -88,34 +123,9 @@ class ViewController: UIViewController   {
         
     }
     
-    //MARK: Process image output
-    func processImage(inputImage:CIImage) -> CIImage{
-        
-        // detect faces
-        let f = getFaces(inputImage)
-        
-        // if no faces, just return original image
-        if f.count == 0 { return inputImage }
-        
-        var retImage = inputImage
-        
-        // if you just want to process on separate queue use this code
-        // this is a non blocking call, but any changes to the image in OpenCV cannot be displayed
-        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
-        //    OpenCVBridge.OpenCVTransferWithBounds(f[0].bounds, usingImage: retImage, andContext: self.videoManager.getCIContext())
-        //}
-        
-        // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCv
-        // this is a blocking call
-        self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        self.bridge.processImage()
-        retImage = self.bridge.getImage()
-        //retImage = OpenCVBridge.OpenCVTransferBoundsAndReturnNewImage(inputImage.extent, usingImage: retImage, andContext: self.videoManager.getCIContext())
-        
-        return retImage
-    }
     
-    //MARK: Convenience Methods
+    
+    //MARK: Convenience Methods for UI Flash and Camera Toggle
     @IBAction func flash(sender: AnyObject) {
         if(self.videoManager.toggleFlash()){
             self.flashSlider.value = 1.0
