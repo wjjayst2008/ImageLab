@@ -15,6 +15,7 @@ class ViewController: UIViewController   {
     var filters : [CIFilter]! = nil
     var videoManager:VideoAnalgesic! = nil
     let pinchFilterIndex = 2
+    var detector:CIDetector! = nil
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -25,6 +26,15 @@ class ViewController: UIViewController   {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.Front)
+        
+        // create dictionary for face detection
+        // HINT: you need to manipulate these proerties for better face detection efficiency
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        
+        // setup a face detector in swift
+        self.detector = CIDetector(ofType: CIDetectorTypeFace,
+                                  context: self.videoManager.getCIContext(), // perform on the GPU is possible
+                                  options: optsDetector)
         
         self.videoManager.setProcessingBlock(self.processImage)
         
@@ -37,44 +47,53 @@ class ViewController: UIViewController   {
     //MARK: Setup filtering
     func setupFilters(){
         filters = []
-        let filterBloom = CIFilter(name: "CIBloom")!
-        filterBloom.setValue(0.5, forKey: kCIInputIntensityKey)
-        filterBloom.setValue(20, forKey: "inputRadius")
-        filters.append(filterBloom)
-        
-        let filterHue = CIFilter(name:"CIHueAdjust")!
-        filterHue.setValue(10.0, forKey: "inputAngle")
-        filters.append(filterHue)
         
         let filterPinch = CIFilter(name:"CIBumpDistortion")!
         filterPinch.setValue(-0.5, forKey: "inputScale")
         filterPinch.setValue(75, forKey: "inputRadius")
-        filterPinch.setValue(CIVector(x:self.view.bounds.size.height-50,y:self.view.bounds.size.width), forKey: "inputCenter")
         filters.append(filterPinch)
         
     }
     
-    func applyFilters(inputImage:CIImage)->CIImage{
+    func applyFiltersToFaces(inputImage:CIImage,features:[CIFaceFeature])->CIImage{
         var retImage = inputImage
-        for filt in filters{
-            filt.setValue(retImage, forKey: kCIInputImageKey)
-            retImage = filt.outputImage!
+        var filterCenter = CGPoint()
+        
+        for f in features {
+            //set where to apply filter
+            filterCenter.x = f.bounds.midX
+            filterCenter.y = f.bounds.midY
+            //do for each filter (assumes all filters have property, "inputCenter")
+            for filt in filters{
+                filt.setValue(retImage, forKey: kCIInputImageKey)
+                filt.setValue(CIVector(CGPoint: filterCenter), forKey: "inputCenter")
+                retImage = filt.outputImage!
+            }
         }
         return retImage
     }
     
     //MARK: Process image output
     func processImage(inputImage:CIImage) -> CIImage{
-        return applyFilters(inputImage)
-    }
-
-    @IBAction func panRecognized(sender: UIPanGestureRecognizer) {
-        let point = sender.locationInView(self.view)
         
-        // this must be custom for each camera position and for each orientation
-        let tmp = CIVector(x:point.y,y:self.view.bounds.size.width-point.x)
-        self.filters[pinchFilterIndex].setValue(tmp, forKey: "inputCenter")
-
+        // detect faces
+        let f = getFaces(inputImage)
+        
+        // if no faces, just return original image
+        if f.count == 0 { return inputImage }
+        
+        //otherwise apply the filters to the faces
+        return applyFiltersToFaces(inputImage, features: f)
     }
+    
+    func getFaces(img:CIImage) -> [CIFaceFeature]{
+        // this ungodly mess makes sure the image is the correct orientation
+        let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
+        // get Face Features
+        return self.detector.featuresInImage(img, options: optsFace) as! [CIFaceFeature]
+        
+    }
+
+   
 }
 
