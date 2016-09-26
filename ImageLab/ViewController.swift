@@ -20,6 +20,7 @@ class ViewController: UIViewController   {
     
     //MARK: Outlets in view
     @IBOutlet weak var flashSlider: UISlider!
+    @IBOutlet weak var stageLabel: UILabel!
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -33,12 +34,12 @@ class ViewController: UIViewController   {
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow,CIDetectorTracking:true]
         
         // setup a face detector in swift
         self.detector = CIDetector(ofType: CIDetectorTypeFace,
                                   context: self.videoManager.getCIContext(), // perform on the GPU is possible
-                                  options: optsDetector)
+                                  options: (optsDetector as! [String : AnyObject]))
         
         self.videoManager.setProcessingBlock(self.processImage)
         
@@ -77,6 +78,7 @@ class ViewController: UIViewController   {
         self.bridge.setImage(retImage,
                              withBounds: f[0].bounds, // the first face
                              andContext: self.videoManager.getCIContext())
+        
         self.bridge.processImage()
         retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
         
@@ -124,6 +126,21 @@ class ViewController: UIViewController   {
     }
     
     
+    
+    @IBAction func swipeRecognized(sender: UISwipeGestureRecognizer) {
+        switch sender.direction {
+        case UISwipeGestureRecognizerDirection.Left:
+            self.bridge.processType += 1
+        case UISwipeGestureRecognizerDirection.Right:
+            self.bridge.processType -= 1
+        default:
+            break
+            
+        }
+        
+        stageLabel.text = "Stage: \(self.bridge.processType)"
+
+    }
     
     //MARK: Convenience Methods for UI Flash and Camera Toggle
     @IBAction func flash(sender: AnyObject) {
