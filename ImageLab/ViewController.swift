@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController   {
 
     //MARK: Class Properties
     var filters : [CIFilter]! = nil
     var videoManager:VideoAnalgesic! = nil
+    let pinchFilterIndex = 2
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -22,6 +24,7 @@ class ViewController: UIViewController   {
         self.setupFilters()
         
         self.videoManager = VideoAnalgesic.sharedInstance
+        self.videoManager.setCameraPosition(AVCaptureDevicePosition.Front)
         
         self.videoManager.setProcessingBlock(self.processImage)
         
@@ -43,6 +46,12 @@ class ViewController: UIViewController   {
         filterHue.setValue(10.0, forKey: "inputAngle")
         filters.append(filterHue)
         
+        let filterPinch = CIFilter(name:"CIBumpDistortion")!
+        filterPinch.setValue(-0.5, forKey: "inputScale")
+        filterPinch.setValue(75, forKey: "inputRadius")
+        filterPinch.setValue(CIVector(x:self.view.bounds.size.height-50,y:self.view.bounds.size.width), forKey: "inputCenter")
+        filters.append(filterPinch)
+        
     }
     
     func applyFilters(inputImage:CIImage)->CIImage{
@@ -59,5 +68,13 @@ class ViewController: UIViewController   {
         return applyFilters(inputImage)
     }
 
+    @IBAction func panRecognized(sender: UIPanGestureRecognizer) {
+        let point = sender.locationInView(self.view)
+        
+        // this must be custom for each camera position and for each orientation
+        let tmp = CIVector(x:point.y,y:self.view.bounds.size.width-point.x)
+        self.filters[pinchFilterIndex].setValue(tmp, forKey: "inputCenter")
+
+    }
 }
 
