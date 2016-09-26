@@ -29,6 +29,8 @@ class ViewController: UIViewController   {
         self.view.backgroundColor = nil
         self.setupFilters()
         
+        self.bridge.loadHaarCascadeWithFilename("nose")
+        
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.Front)
         
@@ -76,7 +78,7 @@ class ViewController: UIViewController   {
         //HINT: you can also send in the bounds of the face to ONLY process the face in OpenCV
         // or any bounds to only process a certain bounding region in OpenCV
         self.bridge.setImage(retImage,
-                             withBounds: f[0].bounds, // the first face
+                             withBounds: f[0].bounds, // the first face bounds
                              andContext: self.videoManager.getCIContext())
         
         self.bridge.processImage()
