@@ -14,8 +14,9 @@ class ViewController: UIViewController   {
     //MARK: Class Properties
     var filters : [CIFilter]! = nil
     var videoManager:VideoAnalgesic! = nil
-    let pinchFilterIndex = 2
     var detector:CIDetector! = nil
+    
+    let pinchFilterIndex = 2
     let bridge = OpenCVBridge()
     
     //MARK: Outlets in view
@@ -33,7 +34,7 @@ class ViewController: UIViewController   {
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyLow]
         
         // setup a face detector in swift
         self.detector = CIDetector(ofType: CIDetectorTypeFace,
@@ -45,6 +46,8 @@ class ViewController: UIViewController   {
         if !videoManager.isRunning{
             videoManager.start()
         }
+        
+        self.bridge.processType = 1
     
     }
     
@@ -59,26 +62,14 @@ class ViewController: UIViewController   {
         
         var retImage = inputImage
         
-        // if you just want to process on separate queue use this code
-        // this is a NON BLOCKING CALL, but any changes to the image in OpenCV cannot be displayed real time
-        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
-        //    self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        //    self.bridge.processImage()
-        //}
-        
         // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCv
         // this is a BLOCKING CALL
-        //self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        //self.bridge.processImage()
-        //retImage = self.bridge.getImage()
+        self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+        self.bridge.processImage()
+        retImage = self.bridge.getImageComposite()
         
         //HINT: you can also send in the bounds of the face to ONLY process the face in OpenCV
         // or any bounds to only process a certain bounding region in OpenCV
-        self.bridge.setImage(retImage,
-                             withBounds: f[0].bounds, // the first face
-                             andContext: self.videoManager.getCIContext())
-        self.bridge.processImage()
-        retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
         
         return retImage
     }
