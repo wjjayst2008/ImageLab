@@ -64,19 +64,20 @@ class ViewController: UIViewController   {
         
         // if you just want to process on separate queue use this code
         // this is a NON BLOCKING CALL, but any changes to the image in OpenCV cannot be displayed real time
-        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
-        //    self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        //    self.bridge.processImage()
-        //}
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+//            self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+//            self.bridge.processImage()
+//        }
         
         // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCv
         // this is a BLOCKING CALL
-        //self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        //self.bridge.processImage()
-        //retImage = self.bridge.getImage()
+//        self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+//        self.bridge.processImage()
+//        retImage = self.bridge.getImage()
         
         //HINT: you can also send in the bounds of the face to ONLY process the face in OpenCV
         // or any bounds to only process a certain bounding region in OpenCV
+        self.bridge.setTransforms(self.videoManager.transform)
         self.bridge.setImage(retImage,
                              withBounds: f[0].bounds, // the first face bounds
                              andContext: self.videoManager.getCIContext())
@@ -121,7 +122,8 @@ class ViewController: UIViewController   {
     
     func getFaces(img:CIImage) -> [CIFaceFeature]{
         // this ungodly mess makes sure the image is the correct orientation
-        let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
+        //let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
+        let optsFace = [CIDetectorImageOrientation:self.videoManager.ciOrientation]
         // get Face Features
         return self.detector.featuresInImage(img, options: optsFace) as! [CIFaceFeature]
         
