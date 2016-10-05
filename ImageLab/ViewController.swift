@@ -33,6 +33,7 @@ class ViewController: UIViewController   {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.front)
+        self.videoManager.setPreset("AVCaptureSessionPresetHigh")
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
@@ -158,6 +159,8 @@ class ViewController: UIViewController   {
     }
     
     @IBAction func switchCamera(_ sender: AnyObject) {
+        self.videoManager.setFPS(desiredFrameRate: 5.0)
+
         self.videoManager.toggleCameraPosition()
     }
     
